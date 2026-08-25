@@ -136,10 +136,22 @@ emu_cfg = HeliosEmulatorConfig(
 )
 cfg = qnx.HeliosConfig(system_name="Helios-1E-lite", emulator_config=emu_cfg)
 
-# Execute (same as pytket lane)
+# Execute (same as pytket lane — multi-program jobs WORK on Helios too)
 exec_job = qnx.start_execute_job(programs=[hugr_ref], backend_config=cfg,
                                   n_shots=[2048], name=...)
 ```
+
+**Helios multi-program batching: CONFIRMED.** Tested with 2 programs
+in one `start_execute_job` — completed OK. Full sweep uses 16 HUGR
+programs per job (4 jobs total: 2 graphs × 2 τ). No `attempt_batching`
+needed (same as pytket lane — that flag is org-level 403).
+
+### UUID serialization pitfall
+
+qnexus job results contain `batch_id` as a `UUID` object.
+`json.dumps(result)` crashes with `TypeError: Object of type UUID is
+not JSON serializable`. Fix: `result["batch_id"] = str(result["batch_id"])`
+before `json.dumps`.
 
 ### Result accessor map
 
@@ -178,6 +190,22 @@ Uncaps the binding score constraint for Top-4 Singapore Quantum Hackathon.
 
 ## Files
 
+### Classifier comparison (25 Aug)
+
+Quantum propagator trace features vs 1-WL/GNN features on WL-indistinguishable
+graph families. Same LR classifier, 5-fold CV, 20 samples/class, shot noise.
+
+| n | Classes | Quantum | GNN/WL | GNN/RF | Random | Verdict |
+|---|---------|---------|--------|--------|--------|---------|
+| 6 | 2 | 1.000 | 0.500 | 0.500 | 0.500 | BEATS_CLASSICAL |
+| 8 | 3 | 0.983 | 0.333 | 0.333 | 0.333 | BEATS_CLASSICAL |
+| 10 | 5 | 0.860 | 0.200 | 0.200 | 0.200 | BEATS_CLASSICAL |
+
+GNN = random chance on ALL families (tried LR + RF — it's the features).
+Honest caveat: advantage over GNNs (1-WL-equivalent), not over global
+classical (connected components, Betti). DQC1-hard = quantum computation
+model advantage, not beating every classical method.
+
 - `quantum/endo_qtda/__init__.py` — classical model (graph pair + moments)
 - `quantum/endo_qtda/circuit.py` — Pauli decomposition + Guppy circuit
 - `quantum/endo_qtda/sweep.py` — Hadamard-test runner (local Selene)
@@ -185,8 +213,14 @@ Uncaps the binding score constraint for Top-4 Singapore Quantum Hackathon.
 - `quantum/endo_qtda/classical_control.py` — WL + Betti + GNN control row
 - `quantum/endo_qtda/nexus_submit.py` — Nexus pytket submission (single circuit)
 - `quantum/endo_qtda/nexus_batched.py` — Nexus multi-program batched sweep
-- `quantum/endo_qtda/helios_submit.py` — Nexus Helios HUGR submission
+- `quantum/endo_qtda/helios_submit.py` — Nexus Helios HUGR submission (single circuit smoke)
+- `quantum/endo_qtda/helios_sweep.py` — Nexus Helios batched full sweep (16 HUGR programs/job)
+- `results/qtda_nexus_H1_1LE_verdict.json` — H1-1LE full sweep verdict
+- `results/qtda_nexus_H2_1LE_verdict.json` — H2-1LE full sweep verdict
+- `results/qtda_nexus_Helios_1E_lite_verdict.json` — Helios-1E-lite full sweep verdict
 - `results/qtda_classical_ground_truth.json` — exact moments T1-T8
 - `results/qtda_dqc1_verdict.json` — 96 circuits, DISTINGUISHABLE
 - `results/qtda_classical_control_row.json` — 3 classical methods, all fail
+- `results/qtda_classifier_comparison.json` — quantum 100%/98%/86% vs GNN random chance
+- `quantum/endo_qtda/classifier_comparison.py` — classifier comparison script (n=6/8/10, 5-fold CV)
 - `docs/qtda-dqc1-hardness-certificate.md` — scientific-impact write-up

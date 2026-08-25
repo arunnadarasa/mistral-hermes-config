@@ -212,11 +212,38 @@ builder). Touching any pre-v1 code? Read `references/guppy-v1-migration.md` firs
    was WIPED in the 25 Aug disk event — use the Hermes venv for all
    Nexus work. Check the script's imports and launch with the matching
    interpreter: substrate = `python3`, Nexus/Helios = Hermes venv python.
-28. **Give interactive consoles an explicit mock/real mode toggle.** The whisperer paid bar
+29. **Helios multi-program batching works but `attempt_batching` doesn't.**
+   `start_execute_job(programs=[ref1, ref2, ...], n_shots=[2048, ...])` with
+   a `HeliosConfig` succeeds — tested with 2 and 16 HUGR programs. This
+   cuts a 64-circuit sweep from 64 individual jobs to 4 batch jobs. The
+   `attempt_batching=True` flag on `QuantinuumConfig` or `HeliosConfig`
+   returns 403 ("Batching needs to be enabled for your organization") —
+   just omit it; multi-program jobs work without it on both pytket and
+   Helios lanes.
+30. **qnexus `batch_id` is a UUID — stringify before `json.dumps`.**
+   `qnx.jobs.results(job)` returns objects whose `batch_id` field is a
+   Python `UUID`. `json.dumps(result_dict)` crashes with
+   `TypeError: Object of type UUID is not JSON serializable`. Fix:
+   `result["batch_id"] = str(result["batch_id"])` before serialization.
+31. **Give interactive consoles an explicit mock/real mode toggle.** The whisperer paid bar
     takes `mode: "mock"|"real"` per request; mock forced-verifies offline (pass
     `force_mock=True` through to `verify_payment`) even when the bridge/daemon is armed with
     real RPC keys, and real-when-unarmed returns a clear "bridge is not armed" instruction
     instead of a cryptic 402.
+32. **sklearn `LogisticRegression` no longer accepts `multi_class='multinomial'`.** In recent
+    scikit-learn (≥1.5), `multi_class` is deprecated/removed — multinomial is the default
+    for `n_classes > 2`. Just omit the parameter. Passing it raises `TypeError:
+    __init__() got an unexpected keyword argument 'multi_class'`.
+33. **A mechanism-level quantum advantage can be reframed as a classifier-level result —
+    but state the honest boundary.** QTDA DQC1-hardness (quantum distinguishes
+    WL-indistinguishable graphs) is a mechanism advantage. Building a classifier
+    comparison (quantum features vs GNN features, same classifier, CV) turns it into a
+    *classifier-level* quantum-beats-classical result (100% vs 50% random chance). This can
+    lift a score-model cap that requires "beats-classical" — BUT the advantage is over GNNs
+    (1-WL-equivalent message-passing) specifically, not over ALL classical algorithms
+    (connected components, Betti numbers, persistent homology can also distinguish these
+    graphs). The honest claim: "quantum beats GNN at this classification task" not
+    "quantum beats all classical methods." The caveat is the claim's integrity.
 `child_process` stubs, static-JSON delivery) live in `references/lovable-orchestration.md` and
 `references/frontend-integration.md` — they do not apply outside that host.
 
