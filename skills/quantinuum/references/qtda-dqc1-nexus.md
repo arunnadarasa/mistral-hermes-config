@@ -23,7 +23,7 @@ GNN-accessible features) cannot.
 | 1 | Local Selene (Quest) | Guppy → HUGR → Quest | ✅ DISTINGUISHABLE, ΔRe=0.2101 |
 | 2 | Nexus H1-1LE | pytket → compile → Quantinuum emulator | ✅ DISTINGUISHABLE, ΔRe=0.2286 (τ=2.0) |
 | 3 | Nexus H2-1LE | pytket → compile → Quantinuum emulator | ✅ DISTINGUISHABLE, ΔRe=0.2081 (τ=2.0) |
-| 4 | Nexus Helios-1E-lite | Guppy → HUGR → Helios runtime | ✅ Smoke: Re=0.764; full sweep running |
+| 4 | Nexus Helios-1E-lite | Guppy → HUGR → Helios runtime | ✅ DISTINGUISHABLE, ΔRe=0.2418 (τ=2.0) |
 
 ### Full sweep results (H1-1LE)
 
@@ -42,6 +42,15 @@ Max ΔRe = 0.2286 — DISTINGUISHABLE.
 | 2.0 | 0.2411 | 0.0330 | 0.2081 |
 
 Max ΔRe = 0.2081 — DISTINGUISHABLE.
+
+### Full sweep results (Helios-1E-lite)
+
+| τ | C6 Re | 2C3 Re | ΔRe |
+|---|-------|--------|-----|
+| 1.0 | 0.7687 | 0.5452 | 0.2235 |
+| 2.0 | 0.2562 | 0.0144 | 0.2418 |
+
+Max ΔRe = 0.2418 — DISTINGUISHABLE.
 
 ## Circuit design
 
