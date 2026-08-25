@@ -98,7 +98,7 @@ builder). Touching any pre-v1 code? Read `references/guppy-v1-migration.md` firs
 | **QAS receipt envelope** (the receipt law machine-checkable: qas/envelope/0.1 — claims/engine/backend_qualifier (honesty gate)/shots/seed/commit/envelope 4√(0.5/shots)/verdict; validate_receipts.py audit PASS/GAP/STRUCTURAL/FAIL; migrate_receipts_qas.py idempotent; migrate only with provable values) | `references/qas-receipt-envelope.md` |
 | **SNOMED CT RF2 verification** (9 verified pathway anchors: 129103003 Endometriosis … 266599000 Dysmenorrhea (successor of dead 156030009) …; verify via CONCEPT active + DESCRIPTION FSN + ASSOCIATION refset (REPLACED_BY 527005/SAME_AS 523009); pitfalls: active-descriptions-on-inactive-concepts, CRLF `tr -d '\r'`, never trust memory SCTIDs (267038008=Edema); fixture = vocabulary anchors, NOT compliance) | `references/snomed-rf2-verification.md` |
 | **Shot-scaling verdict — SEALED** (25 Aug: 32768 complete, 5 levels × 1,540 pairs = 7,700 receipts, all beats=False; 256× shots → zero trajectory, AUC drifts 0.4725→0.4486 AWAY from classical 0.5851; classifier door closed FIVE ways, Fourier-wall predicted; experiment queue CLOSED — every thread committed) | `references/shot-scaling-verdict-sealed.md` |
-| **QTDA DQC1-hardness + Nexus multi-backend** (25 Aug: G18 pair C6 vs 2C3 — WL-indistinguishable but Laplacian-distinguishable; Hadamard-test propagator trace; 4 backends: Selene/Quest + H1-1LE + H2-1LE + Helios-1E-lite; pytket halfturns pitfall; HeliosConfig emulator_config required; multi-program jobs (attempt_batching 403 on this account); classical control row: 1-WL + GNN + Betti all fail) | `references/qtda-dqc1-nexus.md` |
+| **QTDA DQC1-hardness + Nexus multi-backend** (25 Aug: G18 pair C6 vs 2C3 — WL-indistinguishable but Laplacian-distinguishable; Hadamard-test propagator trace; 3 backends confirmed DISTINGUISHABLE: Selene/Quest ΔRe=0.2101 + H1-1LE ΔRe=0.2286 + H2-1LE ΔRe=0.2081; Helios-1E-lite smoke Re=0.764, full sweep running; pytket halfturns pitfall; HeliosConfig emulator_config required; multi-program jobs work on Helios too (attempt_batching 403 on this account); classical control row: 1-WL + GNN + Betti all fail) | `references/qtda-dqc1-nexus.md` |
 | **Git recovery + disk guards** (25 Aug data-loss event: /tmp prune at 98% disk took 126 files + .git/HEAD+config; recover via reflog evidence → fresh-clone pack graft (fetch does NOT heal) → checkout-index; guards: disk_watch.sh + grind_mirror.sh crons + npm/pip cache purge; standing item: migrate repo out of /tmp) | `references/git-recovery-and-disk-guards.md` |
 | Lovable-platform specifics (turn rollback, `.pydeps`, Worker limits) | `references/lovable-orchestration.md` |
 
@@ -202,17 +202,16 @@ builder). Touching any pre-v1 code? Read `references/guppy-v1-migration.md` firs
     `execution reverted` when the payer has no balance for a second ERC-20 payment) — record
     the revert honestly rather than smoothing it.
 27. **Two interpreter lanes — never cross them.** The repo has TWO guppylang
-    worlds: the **substrate lane** (`quantum/endo_substrate/kernel.py`,
-    `shot_scaling_probe.py`, `sweep.py`) runs on the SYSTEM python
-    (`guppylang 1.0.1`, where `output` exists in `std.builtins`); the
-    **QIR/Helios lane** (`quantum/endo_rotor/qir_rotor.py`, Nexus jobs)
-    runs on the pinned venv `/tmp/qir021_venv` (guppylang 0.21.16, where
-    `output` was RENAMED to `result` — `from guppylang.std.builtins
-    import result`). Launching a substrate script with the venv python
-    dies with `ImportError: cannot import name 'output'` even though the
-    cache rows exist (they were made under system python). Check the
-    script's imports and launch with the matching interpreter: substrate
-    = `python3`, QIR/Helios = `/tmp/qir021_venv/bin/python`.
+   worlds: the **substrate lane** (`quantum/endo_substrate/kernel.py`,
+   `shot_scaling_probe.py`, `sweep.py`) runs on the SYSTEM python
+   (`guppylang 1.0.1`, where `output` exists in `std.builtins`); the
+   **Nexus/Helios lane** (`quantum/endo_qtda/nexus_batched.py`,
+   `helios_sweep.py`, Nexus jobs) runs on the **Hermes venv**
+   `/Users/openclaw/.hermes/hermes-agent/venv/bin/python` (Python 3.11,
+   guppylang 1.0.x, qnexus, pytket 2.18.1). The old `/tmp/qir021_venv`
+   was WIPED in the 25 Aug disk event — use the Hermes venv for all
+   Nexus work. Check the script's imports and launch with the matching
+   interpreter: substrate = `python3`, Nexus/Helios = Hermes venv python.
 28. **Give interactive consoles an explicit mock/real mode toggle.** The whisperer paid bar
     takes `mode: "mock"|"real"` per request; mock forced-verifies offline (pass
     `force_mock=True` through to `verify_payment`) even when the bridge/daemon is armed with

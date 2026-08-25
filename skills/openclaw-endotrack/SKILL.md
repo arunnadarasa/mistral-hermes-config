@@ -86,8 +86,9 @@ this skill and a general-purpose instruction conflict, THIS skill wins.
 - **QTDA DQC1-hardness (25 Aug)**: C6 vs 2C3 (G18 pair) are
   1-WL-indistinguishable (identical hash every iteration, GNN
   aggregation identical every layer). The quantum propagator trace
-  `Tr(e^{-iHτ})/N` DISTINGUISHES them (ΔRe=0.21 at τ=1.0/2.0 on local
-  Selene/Quest; confirmed on H1-1LE and H2-1LE via Nexus). Classical
+  `Tr(e^{-iHτ})/N` DISTINGUISHES them — 3 backends confirmed:
+  Selene/Quest ΔRe=0.2101, H1-1LE ΔRe=0.2286, H2-1LE ΔRe=0.2081
+  (Helios-1E-lite smoke Re=0.764, full sweep running). Classical
   control row: 1-WL hash + GNN aggregation + Betti numbers (via
   GNN-accessible features) ALL FAIL. This is DQC1-hard (arXiv:2607.03278)
   — not known to be classically simulable. +2.5 score (scientific
@@ -157,8 +158,9 @@ this skill and a general-purpose instruction conflict, THIS skill wins.
   (honesty-bound, stays 9) · fresh_clone_reproducible ✅ ·
   submission_drafts 5/5 ✅. Score model: max honest-ledger ≈ 82.5–83/100.
   **QTDA DQC1-hardness (25 Aug): +2.5 → scientific 13→15, uncaps binding
-  constraint. 4-backend confirmation (Selene/Quest + H1-1LE + H2-1LE +
-  Helios-1E-lite). Classical control row (1-WL + GNN + Betti) all fail.**
+  constraint. 3 backends confirmed DISTINGUISHABLE (Selene/Quest ΔRe=0.2101
+  + H1-1LE ΔRe=0.2286 + H2-1LE ΔRe=0.2081; Helios-1E-lite smoke Re=0.764,
+  full sweep running). Classical control row (1-WL + GNN + Betti) all fail.**
 
 ## 9 · Submission facts (verify before repeat)
 
