@@ -1,0 +1,23 @@
+# Mistral provider config for Hermes Agent
+# Copy relevant section into ~/.hermes/config.yaml
+
+model:
+  default: mistral-large-latest
+  provider: mistral
+  base_url: https://api.mistral.ai/v1
+
+providers:
+  mistral:
+    api: https://api.mistral.ai/v1
+    name: Mistral
+    key_env: MISTRAL_API_KEY
+    discover_models: true
+    models:
+      - mistral-large-latest
+      - mistral-medium-latest
+      - mistral-small-latest
+      - codestral-latest
+      - devstral-medium-latest
+      - devstral-latest
+      - ministral-8b-latest
+      - ministral-3b-latest

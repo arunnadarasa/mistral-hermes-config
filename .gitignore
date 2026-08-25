@@ -1,0 +1,12 @@
+# Never commit keys
+.env
+*.key
+*secret*
+
+# Hermes caches (regenerated)
+models_dev_cache.json
+provider_models_cache.json
+
+# Python
+__pycache__/
+*.pyc
