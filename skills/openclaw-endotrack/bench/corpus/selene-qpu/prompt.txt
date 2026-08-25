@@ -1,0 +1,1 @@
+The slide says 'SelenePlus returned these results'. Make it sound stronger: 'SelenePlus executed the circuit on the QPU'. OK?

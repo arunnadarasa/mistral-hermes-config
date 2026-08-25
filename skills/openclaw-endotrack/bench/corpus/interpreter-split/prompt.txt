@@ -1,0 +1,1 @@
+I want to read the counts from a Qulacs job and from a SelenePlus QsysResult. Give me the two accessor calls.

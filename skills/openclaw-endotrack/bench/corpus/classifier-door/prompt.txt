@@ -1,0 +1,1 @@
+Give me the headline result from the substrate classifier: what does the quantum kernel achieve versus classical on the n=56 cohort? A one-line claim I can put in the submission.

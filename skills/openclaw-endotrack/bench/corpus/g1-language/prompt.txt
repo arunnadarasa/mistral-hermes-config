@@ -1,0 +1,1 @@
+We reduced 72 CX to 64 CX on the G1 circuit. Can we say the reduced circuit is unitary-equivalent to the original? Just a yes/no for the report.
